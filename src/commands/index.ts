@@ -16,13 +16,29 @@ export default (editor: Editor, opts: RequiredPluginOptions) => {
   const { Commands } = editor;
   const cmdOpenExport = opts.overwriteExport ? 'export-template' : cmdExportMjml;
 
-  Commands.add(cmdGetMjml, () => {
-      return `${opts.preMjml}${editor.getHtml().trim()}${opts.postMjml}`;
+  Commands.add(cmdGetMjml, (ed, _, opt) => {
+    opt = {
+      component: null,
+      preMjml: '',
+      postMjml: '',
+      ...opt,
+    }
+
+    return `${opts.preMjml}${opt.preMjml}${editor.getHtml({ component: opt.component }).trim()}${opt.postMjml}${opts.postMjml}`;
   });
 
   Commands.add(cmdGetMjmlToHtml, (ed, _, opt) => {
-      const mjml = Commands.run(cmdGetMjml);
-      return mjmlConvert(mjml, opts.fonts, opt);
+    opt = {
+      component: null,
+      preMjml: '',
+      postMjml: '',
+      ...opt,
+    }
+
+    const { component, preMjml, postMjml, ...convertOpt } = opt
+
+    const mjml = Commands.run(cmdGetMjml, { component, preMjml, postMjml });
+    return mjmlConvert(mjml, opts.fonts, convertOpt);
   });
 
   openExportMjml(editor, opts, cmdOpenExport);
