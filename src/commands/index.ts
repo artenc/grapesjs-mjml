@@ -1,5 +1,5 @@
 import type { Editor } from 'grapesjs';
-import { RequiredPluginOptions } from '..';
+import { CommandOptionsMjmlToHtml, RequiredPluginOptions } from '..';
 import { mjmlConvert } from '../components/utils';
 import openExportMjml from './openExportMjml';
 import openImportMjml from './openImportMjml';
@@ -28,17 +28,9 @@ export default (editor: Editor, opts: RequiredPluginOptions) => {
   });
 
   Commands.add(cmdGetMjmlToHtml, (ed, _, opt) => {
-    opt = {
-      component: null,
-      preMjml: '',
-      postMjml: '',
-      ...opt,
-    }
-
-    const { component, preMjml, postMjml, ...convertOpt } = opt
-
-    const mjml = Commands.run(cmdGetMjml, { component, preMjml, postMjml });
-    return mjmlConvert(mjml, opts.fonts, convertOpt);
+    const { mjml, component, preMjml, postMjml, ...rest } = (opt || {}) as CommandOptionsMjmlToHtml;
+    const mjmlToParse = mjml || Commands.run(cmdGetMjml, { component, preMjml, postMjml });
+    return mjmlConvert(opts.mjmlParser, mjmlToParse, opts.fonts, rest);
   });
 
   openExportMjml(editor, opts, cmdOpenExport);
@@ -46,16 +38,15 @@ export default (editor: Editor, opts: RequiredPluginOptions) => {
 
   // Device commands
   Commands.add(cmdDeviceDesktop, {
-    run: ed => ed.setDevice('Desktop'),
+    run: (ed) => ed.setDevice('Desktop'),
     stop: () => {},
   });
   Commands.add(cmdDeviceTablet, {
-    run: ed => ed.setDevice('Tablet'),
+    run: (ed) => ed.setDevice('Tablet'),
     stop: () => {},
   });
   Commands.add(cmdDeviceMobile, {
-    run: ed => ed.setDevice('Mobile portrait'),
+    run: (ed) => ed.setDevice('Mobile portrait'),
     stop: () => {},
   });
-
 };

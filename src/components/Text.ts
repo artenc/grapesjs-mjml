@@ -1,12 +1,13 @@
 // Specs: https://documentation.mjml.io/#mjml-text
 import type { Editor } from 'grapesjs';
+import { ComponentPluginOptions } from '.';
 import { componentsToQuery, getName, isComponentType } from './utils';
 import { type as typeColumn } from './Column';
 import { type as typeHero } from './Hero';
 
 export const type = 'mj-text';
 
-export default (editor: Editor, { coreMjmlModel, coreMjmlView }: any) => {
+export default (editor: Editor, { coreMjmlModel, coreMjmlView }: ComponentPluginOptions) => {
   editor.Components.addType(type, {
     extend: 'text',
     extendFnView: ['onActive'],
@@ -19,10 +20,23 @@ export default (editor: Editor, { coreMjmlModel, coreMjmlView }: any) => {
         draggable: componentsToQuery([typeColumn, typeHero]),
         highlightable: false,
         stylable: [
-          'height', 'font-style', 'font-size', 'font-weight', 'font-family', 'color',
-          'line-height', 'letter-spacing', 'text-decoration', 'align', 'text-transform',
-          'padding', 'padding-top', 'padding-left', 'padding-right', 'padding-bottom',
-          'container-background-color'
+          'height',
+          'font-style',
+          'font-size',
+          'font-weight',
+          'font-family',
+          'color',
+          'line-height',
+          'letter-spacing',
+          'text-decoration',
+          'align',
+          'text-transform',
+          'padding',
+          'padding-top',
+          'padding-left',
+          'padding-right',
+          'padding-bottom',
+          'container-background-color',
         ],
         'style-default': {
           'padding-top': '10px',
@@ -30,8 +44,7 @@ export default (editor: Editor, { coreMjmlModel, coreMjmlView }: any) => {
           'padding-right': '25px',
           'padding-left': '25px',
           'font-size': '13px',
-          'line-height': '22px',
-          'align': 'left',
+          align: 'left',
         },
       },
     },
